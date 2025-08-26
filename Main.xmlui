@@ -2,39 +2,18 @@
   xmlns:Extensions="component-ns:XMLUIExtensions"
   var.baseUrl="http://localhost:8080/proxy/">
 
-  <!-- Headless HelloAuth service -->
   <Extensions:HelloAuth
     id="auth"
     issuer="https://issuer.hello.coop"
-    client_id="YOUR_CLIENT_ID"
+    client_id="0cfa93f5-5d6d-4ec7-9cd7-1f144516a074"
     redirect_uri="{window.location.origin + '/'}"
     scopes="openid email profile"
     storage="session"
     autoLogin="false"
     proxy_base_url="{baseUrl}" />
 
-  <!-- Debug panel -->
   <Card>
     <H3>HelloAuth Debug</H3>
-
     <Button onClick="{() => auth.login()}">Login</Button>
-
-    <Text when="{auth.endpoints}">
-      authorize: {auth.endpoints.authorization_endpoint}
-    </Text>
-    <Text when="{auth.endpoints}">
-      token: {auth.endpoints.token_endpoint}
-    </Text>
-    <Text when="{auth.endpoints}">
-      jwks: {auth.endpoints.jwks_uri}
-    </Text>
-
-    <Text when="{auth.temp.state}">state: {auth.temp.state}</Text>
-    <Text when="{auth.temp.nonce}">nonce: {auth.temp.nonce}</Text>
-    <Text when="{auth.temp.code}">code: {auth.temp.code}</Text>
-
-    <Fragment when="{auth.error}">
-      <Text>Error: {auth.error.code} — {auth.error.message}</Text>
-    </Fragment>
   </Card>
 </App>
