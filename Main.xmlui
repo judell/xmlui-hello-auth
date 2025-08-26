@@ -2,6 +2,8 @@
   xmlns:Extensions="component-ns:XMLUIExtensions"
   var.baseUrl="http://localhost:8080/proxy/">
 
+  <H1>XMLUI / HelloAuth demo</H1>
+
   <Extensions:HelloAuth
     id="auth"
     issuer="https://issuer.hello.coop"
@@ -12,8 +14,39 @@
     autoLogin="false"
     proxy_base_url="{baseUrl}" />
 
-  <Card>
-    <H3>HelloAuth Debug</H3>
-    <Button onClick="{() => auth.login()}">Login</Button>
-  </Card>
+  <!-- Unauthed probe: expect 401 -->
+  <Fragment when="{!auth.tokens?.access_token}">
+    <DataSource
+      id="probe"
+      url="{baseUrl + 'httpbin.org/bearer'}"
+      method="GET" />
+    <Text when="{probe.error}">
+      Unauthenticated (expected): {probe.error.status}
+    </Text>
+    <Button onClick="{() => auth.login()}">
+      Login
+    </Button>
+  </Fragment>
+
+  <!-- Authed call: send Bearer token via proxy, expect 200 -->
+  <Fragment when="{auth.tokens?.access_token}">
+    <DataSource
+      id="privateCall"
+      url="{baseUrl + 'httpbin.org/bearer'}"
+      method="GET"
+      headers="{
+      {
+        'Authorization': 'Bearer ' + auth.tokens.access_token
+      }
+    }" />
+    <Text when="{privateCall.value?.authenticated}">
+      Private OK (server says authenticated)
+    </Text>
+    <Text when="{privateCall.error}">
+      Private FAIL: {privateCall.error.status}
+    </Text>
+    <Button onClick="{() => auth.logout()}">
+      Logout
+    </Button>
+  </Fragment>
 </App>
