@@ -16,48 +16,34 @@
         storage="session"
         autoLogin="false"
         proxy_base_url="{proxyBaseUrl}" />
-      <!-- Unauthed probe: expect 401 -->
-      <Fragment when="{!auth.tokens?.access_token}">
-        <DataSource
-          id="probe"
-          url="{proxyBaseUrl + 'httpbin.org/bearer'}"
-          method="GET" />
-        <Text>
-          Unauthenticated (401 expected)
-        </Text>
-        <Button
-          onClick="{() => {
-            console.log('About to call auth.login()...');
-            auth.login();
-            console.log('auth.login() call completed');  // This won't show if function hangs
-        }}">
+
+      <Fragment when="{!auth.tokens.access_token}">
+        <Button onClick="{() => auth.login()}">
           Login
         </Button>
       </Fragment>
-      <!-- Authed call: send Bearer token via proxy, expect 200 -->
+
       <Fragment when="{auth.tokens?.access_token}">
         <DataSource
-          id="privateCall"
-          url="{proxyBaseUrl + 'httpbin.org/bearer'}"
+          id="userInfo"
+          url="{proxyBaseUrl + 'wallet.hello.coop/oauth/userinfo'}"
           method="GET"
-          headers="{
-      {
-        'Authorization': 'Bearer ' + auth.tokens.access_token
-      }
-    }" />
-        <Text when="{privateCall.value?.authenticated}">
-          Private OK (server says authenticated)
+          headers="{{'Authorization': 'Bearer ' + auth.tokens.access_token}}" />
+
+        <Text when="{userInfo.value}">
+          ✅ Token validated by Hello.coop! User: {userInfo.value.email}
         </Text>
-        <Text when="{privateCall.error}">
-          Private FAIL: {privateCall.error.status}
+        <Text when="{userInfo.error}">
+          ❌ Token validation failed: {userInfo.error.status}
         </Text>
+
         <Button onClick="{() => auth.logout()}">
           Logout
         </Button>
       </Fragment>
     </VStack>
     <SpaceFiller />
-    <Text width="200rem" preserveLinebreaks="true">
+    <Text preserveLinebreaks="true">
       { sourceCode.value }
     </Text>
   </HStack>
