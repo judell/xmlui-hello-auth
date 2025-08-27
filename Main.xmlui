@@ -57,7 +57,7 @@
       </Fragment>
     </VStack>
     <SpaceFiller />
-    <Text preserveLinebreaks="true">
+    <Text width="200rem" preserveLinebreaks="true">
       { sourceCode.value }
     </Text>
   </HStack>
