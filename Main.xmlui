@@ -1,6 +1,6 @@
 <App
   xmlns:Extensions="component-ns:XMLUIExtensions"
-  var.baseUrl="https://hn.jonudell.info/xmlui-hello-auth/proxy/">
+  var.proxyBaseUrl="https://hn.jonudell.info/xmlui-hello-auth/proxy/">
   <DataSource id="sourceCode" url="Main.xmlui" />
   <HStack>
     <VStack>
@@ -15,12 +15,12 @@
         scopes="openid email profile"
         storage="session"
         autoLogin="false"
-        proxy_base_url="{baseUrl}" />
+        proxy_base_url="{proxyBaseUrl}" />
       <!-- Unauthed probe: expect 401 -->
       <Fragment when="{!auth.tokens?.access_token}">
         <DataSource
           id="probe"
-          url="{baseUrl + 'httpbin.org/bearer'}"
+          url="{proxyBaseUrl + 'httpbin.org/bearer'}"
           method="GET" />
         <Text>
           Unauthenticated (401 expected)
@@ -38,7 +38,7 @@
       <Fragment when="{auth.tokens?.access_token}">
         <DataSource
           id="privateCall"
-          url="{baseUrl + 'httpbin.org/bearer'}"
+          url="{proxyBaseUrl + 'httpbin.org/bearer'}"
           method="GET"
           headers="{
       {
