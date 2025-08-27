@@ -1,6 +1,8 @@
 <App
   xmlns:Extensions="component-ns:XMLUIExtensions"
-  var.proxyBaseUrl="https://hn.jonudell.info/xmlui-hello-auth/proxy/">
+  var.proxyBaseUrl="https://hn.jonudell.info/xmlui-hello-auth/proxy/"
+  var.debug="{false}"
+  >
   <DataSource id="sourceCode" url="Main.xmlui" />
   <HStack>
     <VStack>
@@ -13,34 +15,30 @@
         client_id="0cfa93f5-5d6d-4ec7-9cd7-1f144516a074"
         redirect_uri="https://hn.jonudell.info/xmlui-hello-auth/"
         scopes="openid email profile"
-        storage="session"
         autoLogin="false"
         proxy_base_url="{proxyBaseUrl}" />
-
-      <Fragment when="{!auth.tokens.access_token}">
+      <Text when="{debug}" preserveLinebreaks="true">
+        { JSON.stringify(auth, null, 2) }
+      </Text>
+      <Fragment when="{!auth.tokens.id_token}">
         <Button onClick="{() => auth.login()}">
           Login
         </Button>
       </Fragment>
-
-      <Fragment when="{auth.tokens?.access_token}">
-        <DataSource
-          id="userInfo"
-          url="{proxyBaseUrl + 'wallet.hello.coop/oauth/userinfo'}"
-          method="GET"
-          headers="{{'Authorization': 'Bearer ' + auth.tokens.access_token}}" />
-
-        <Text when="{userInfo.value}">
-          ✅ Token validated by Hello.coop! User: {userInfo.value.email}
+      <VStack>
+      <Fragment when="{auth.tokens?.id_token}">
+        <Text>
+          ✅ Logged in
         </Text>
-        <Text when="{userInfo.error}">
-          ❌ Token validation failed: {userInfo.error.status}
+        <Text>
+           {auth.user.name} {auth.user.email}
         </Text>
-
+        <Image width="200px" src="{ auth.user.picture }" />
         <Button onClick="{() => auth.logout()}">
           Logout
         </Button>
       </Fragment>
+      </VStack>
     </VStack>
     <SpaceFiller />
     <Text preserveLinebreaks="true">
