@@ -1,5 +1,4 @@
 <App
-  xmlns:Extensions="component-ns:XMLUIExtensions"
   var.proxyBaseUrl="https://hn.jonudell.info/xmlui-hello-auth/proxy/"
   var.debug="{false}"
   >
@@ -9,7 +8,7 @@
       <H1>
         XMLUI / HelloAuth demo
       </H1>
-      <Extensions:HelloAuth
+      <HelloAuth
         id="auth"
         issuer="https://issuer.hello.coop"
         client_id="0cfa93f5-5d6d-4ec7-9cd7-1f144516a074"
